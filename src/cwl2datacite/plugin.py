@@ -211,89 +211,89 @@ def cwl2datacite(context: TranspilerContext, options: CWL2DataCiteOptions) -> No
     """CWL 2 DataCite Transpiler-Mate Plugin."""
     metadata_source: SoftwareApplication = context.metadata
 
-    datacite_attributes: DataCiteAttributes = DataCiteAttributes(
-        doi=str(metadata_source.identifier) if metadata_source.identifier else None,
-        types=ResourceType(
-            resource_type=metadata_source.name,
-            resource_type_general=ResourceTypeGeneral.SOFTWARE,
-        ),
-        identifiers=[
-            Identifier(
-                identifier_type="DOI", identifier=str(metadata_source.identifier)
-            )
-            if metadata_source.identifier
-            else Identifier(
-                identifier_type="URN", identifier=f"urn:uuid:{uuid.uuid4()}"
-            )
-        ],  # supply a fake required identifier if the DOI hasn't been associated yet
-        related_identifiers=[
-            RelatedIdentifier(
-                related_identifier=str(metadata_source.same_as),
-                related_identifier_type=RelatedIdentifierType.DOI,
-                relation_type=RelationType.IS_IDENTICAL_TO,
-                resource_type_general=ResourceTypeGeneral.SOFTWARE,
-            )
-        ]
-        if metadata_source.same_as
-        else [],
-        titles=[Title(title=metadata_source.name)],
-        descriptions=[
-            Description(
-                description=metadata_source.description,
-                description_type=DescriptionType.TECHNICAL_INFO,
-            )
-        ],
-        publisher=Publisher(name=metadata_source.publisher.name),
-        publication_year=metadata_source.date_created.year,
-        dates=[
-            Date(
-                date=date.fromtimestamp(time.time()),
-                date_type=DateType.UPDATED,
-                date_information="New version release",
-            )
-        ],
-        rights_list=[
-            Right(
-                rights=metadata_source.license.name
-                or str(
-                    metadata_source.license.identifier
-                    or metadata_source.license.url
-                    or metadata_source.license
-                )
-                if isinstance(metadata_source.license, CreativeWork)
-                else str(metadata_source.license),
-                rights_uri=metadata_source.license.url
-                if isinstance(metadata_source.license, CreativeWork)
-                else None,
-                rights_identifier=str(metadata_source.license.identifier)
-                if isinstance(metadata_source.license, CreativeWork)
-                else None,
-                rights_identifier_scheme="SPDX",
-            )
-        ]
-        if metadata_source.license
-        else None,
-        creators=list(
-            map(
-                _to_creator,
-                metadata_source.author
-                if isinstance(metadata_source.author, list)
-                else [metadata_source.author],
-            )
-        ),
-        contributors=list(
-            map(
-                _to_contributor,
-                metadata_source.contributor
-                if isinstance(metadata_source.contributor, list)
-                else [metadata_source.contributor],
-            )
-        )
-        if metadata_source.contributor
-        else None,
-    )
-
     try:
+        datacite_attributes: DataCiteAttributes = DataCiteAttributes(
+            doi=str(metadata_source.identifier) if metadata_source.identifier else None,
+            types=ResourceType(
+                resource_type=metadata_source.name,
+                resource_type_general=ResourceTypeGeneral.SOFTWARE,
+            ),
+            identifiers=[
+                Identifier(
+                    identifier_type="DOI", identifier=str(metadata_source.identifier)
+                )
+                if metadata_source.identifier
+                else Identifier(
+                    identifier_type="URN", identifier=f"urn:uuid:{uuid.uuid4()}"
+                )
+            ],  # supply a fake required identifier if the DOI hasn't been associated yet
+            related_identifiers=[
+                RelatedIdentifier(
+                    related_identifier=str(metadata_source.same_as),
+                    related_identifier_type=RelatedIdentifierType.DOI,
+                    relation_type=RelationType.IS_IDENTICAL_TO,
+                    resource_type_general=ResourceTypeGeneral.SOFTWARE,
+                )
+            ]
+            if metadata_source.same_as
+            else [],
+            titles=[Title(title=metadata_source.name)],
+            descriptions=[
+                Description(
+                    description=metadata_source.description,
+                    description_type=DescriptionType.TECHNICAL_INFO,
+                )
+            ],
+            publisher=Publisher(name=metadata_source.publisher.name),
+            publication_year=metadata_source.date_created.year,
+            dates=[
+                Date(
+                    date=date.fromtimestamp(time.time()),
+                    date_type=DateType.UPDATED,
+                    date_information="New version release",
+                )
+            ],
+            rights_list=[
+                Right(
+                    rights=metadata_source.license.name
+                    or str(
+                        metadata_source.license.identifier
+                        or metadata_source.license.url
+                        or metadata_source.license
+                    )
+                    if isinstance(metadata_source.license, CreativeWork)
+                    else str(metadata_source.license),
+                    rights_uri=metadata_source.license.url
+                    if isinstance(metadata_source.license, CreativeWork)
+                    else None,
+                    rights_identifier=str(metadata_source.license.identifier)
+                    if isinstance(metadata_source.license, CreativeWork)
+                    else None,
+                    rights_identifier_scheme="SPDX",
+                )
+            ]
+            if metadata_source.license
+            else None,
+            creators=list(
+                map(
+                    _to_creator,
+                    metadata_source.author
+                    if isinstance(metadata_source.author, list)
+                    else [metadata_source.author],
+                )
+            ),
+            contributors=list(
+                map(
+                    _to_contributor,
+                    metadata_source.contributor
+                    if isinstance(metadata_source.contributor, list)
+                    else [metadata_source.contributor],
+                )
+            )
+            if metadata_source.contributor
+            else None,
+        )
+
         datacite_data: Mapping[str, Any] = datacite_attributes.model_dump(
             mode="json", exclude_none=True, by_alias=True
         )
