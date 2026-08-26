@@ -4,13 +4,13 @@
 
 from __future__ import annotations
 
+from datetime import (
+    date as date_aliased,  # noqa: TC003 - required by Pydantic at runtime
+)
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field, RootModel
-
-if TYPE_CHECKING:
-    from datetime import date as date_aliased
 
 
 class Identifier(BaseModel):
