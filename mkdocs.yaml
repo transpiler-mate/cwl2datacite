@@ -1,0 +1,67 @@
+# Copyright 2026 Transpiler-Mate
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+site_name: CWL 2 DataCite
+site_description: Convert CWL metadata to DataCite Metadata Schema 4.6 JSON.
+site_url: https://Transpiler-Mate.github.io/cwl2datacite/
+repo_url: https://github.com/Transpiler-Mate/cwl2datacite
+repo_name: cwl2datacite
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: site
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - Overview: tutorials/index.md
+      - First steps: tutorials/first-steps.md
+  - How-to guides:
+      - Overview: how-to/index.md
+      - Install: how-to/install.md
+      - Use the CLI: how-to/use-cli.md
+  - Reference:
+      - Overview: reference/index.md
+      - API: reference/api.md
+  - Explanation:
+      - Overview: explanation/index.md
+      - Architecture: explanation/architecture.md
+
+theme:
+  name: readthedocs
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - content.code.copy
+    - search.suggest
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences

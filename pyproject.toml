@@ -1,0 +1,171 @@
+# Copyright 2026 Transpiler-Mate
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cwl2datacite"
+dynamic = ["version"]
+description = "CWL 2 DataCite Transpiler-Mate Plugin."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [
+  { name = "Transpiler-Mate", email = "info@terradue.com" },
+]
+keywords = []
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "transpiler-mate-api @ git+https://github.com/sim13pods/transpiler-mate-api.git@main",
+  "loguru==0.7.3"
+]
+
+# TODO remove me as soon as transpiler-mate-api is on PyPI
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project.entry-points."transpiler_mate.plugins"]
+cwl2datacite = "cwl2datacite.plugin:cwl2datacite"
+
+[project.urls]
+Homepage = "https://github.com/Transpiler-Mate/cwl2datacite"
+Documentation = "https://Transpiler-Mate.github.io/cwl2datacite/"
+Repository = "https://github.com/Transpiler-Mate/cwl2datacite"
+Issues = "https://github.com/Transpiler-Mate/cwl2datacite/issues"
+Changelog = "https://github.com/Transpiler-Mate/cwl2datacite/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "src/cwl2datacite/__about__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src",
+  "/tests",
+  "/docs",
+  "/README.md",
+  "/CHANGELOG.md",
+  "/LICENSE",
+  "/NOTICE",
+  "/pyproject.toml",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cwl2datacite"]
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy==1.19.1",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/cwl2datacite tests}"
+
+[tool.coverage.run]
+source_pkgs = ["cwl2datacite", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/cwl2datacite/__about__.py",
+]
+
+[tool.coverage.paths]
+cwl2datacite = ["src/cwl2datacite", "*/cwl2datacite/src/cwl2datacite"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.hatch.envs.test]
+skip-install = false
+dependencies = [
+  "pytest>=8.4,<10",
+  "pytest-cov>=6.2,<8",
+]
+
+[tool.hatch.envs.test.scripts]
+test = "pytest {args:tests}"
+testv = "pytest --verbose {args:tests}"
+test-cov = "pytest --cov=cwl2datacite --cov-report=term-missing {args:tests}"
+test-show-setup = "pytest --setup-show"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+  "--strict-config",
+  "--strict-markers",
+]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+[tool.hatch.envs.dev]
+skip-install = false
+dependencies = [
+  "mypy>=2.3.0",
+  "ruff>=0.16.0",
+  "bandit>=1.9.4",
+]
+
+[tool.ruff.lint]
+# Start with the essential rules
+select = [
+  "F",    # Pyflakes (Critical for bugs)
+  "E",    # pycodestyle Errors
+  "W",    # pycodestyle Warnings
+  "I",    # isort (Import sorting)
+  "UP",   # pyupgrade (Modern syntax)
+  "B",    # flake8-bugbear (Common bugs)
+  "C4",   # flake8-comprehensions
+  "SIM",  # flake8-simplify
+  "FA",   # flake8-future-annotations
+  "TC",   # flake8-type-checking
+  "PTH",  # flake8-use-pathlib
+  "RET",  # flake8-return
+  "C90",  # McCabe Complexity (Enables C901)
+]
+
+# Ignore rules that conflict with the formatter (Ruff Format/Black)
+ignore = [
+  "E501", # Line too long (handled by formatter)
+  "W191", # Tab indentation (handled by formatter)
+  "E111", # Indentation issues (handled by formatter)
+  "E114", # Indentation issues (handled by formatter)
+  "E117", # Over-indented (handled by formatter)
+]
+
+[tool.ruff.lint.mccabe]
+# Flag errors (C901) whenever complexity exceeds 10 (default is 10)
+max-complexity = 10
+
+[tool.hatch.envs.dev.scripts]
+typecheck = "mypy --install-types --non-interactive {args:src tests}"
+lint = "ruff format {args:src tests}"
+check = "ruff check --fix {args:src tests}"
+security = "bandit -r {args:src}"
