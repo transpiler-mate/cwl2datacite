@@ -1,4 +1,4 @@
-# Copyright 2026 Transpiler-Mate
+# Copyright 2026 Terradue
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -75,33 +75,17 @@ __ROLES_MAPPING_: Mapping[AnyUrl, ContributorType] = {
     AnyUrl(
         "https://credit.niso.org/contributor-roles/formal-analysis/"
     ): ContributorType.RESEARCHER,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/funding-acquisition/"
-    ): ContributorType.OTHER,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/investigation/"
-    ): ContributorType.RESEARCHER,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/methodology/"
-    ): ContributorType.RESEARCHER,
+    AnyUrl("https://credit.niso.org/contributor-roles/funding-acquisition/"): ContributorType.OTHER,
+    AnyUrl("https://credit.niso.org/contributor-roles/investigation/"): ContributorType.RESEARCHER,
+    AnyUrl("https://credit.niso.org/contributor-roles/methodology/"): ContributorType.RESEARCHER,
     AnyUrl(
         "https://credit.niso.org/contributor-roles/project-administration/"
     ): ContributorType.PROJECT_MANAGER,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/resources/"
-    ): ContributorType.OTHER,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/software/"
-    ): ContributorType.OTHER,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/supervision/"
-    ): ContributorType.SUPERVISOR,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/validation/"
-    ): ContributorType.RESEARCHER,
-    AnyUrl(
-        "https://credit.niso.org/contributor-roles/visualization/"
-    ): ContributorType.PRODUCER,
+    AnyUrl("https://credit.niso.org/contributor-roles/resources/"): ContributorType.OTHER,
+    AnyUrl("https://credit.niso.org/contributor-roles/software/"): ContributorType.OTHER,
+    AnyUrl("https://credit.niso.org/contributor-roles/supervision/"): ContributorType.SUPERVISOR,
+    AnyUrl("https://credit.niso.org/contributor-roles/validation/"): ContributorType.RESEARCHER,
+    AnyUrl("https://credit.niso.org/contributor-roles/visualization/"): ContributorType.PRODUCER,
     AnyUrl(
         "https://credit.niso.org/contributor-roles/writing-original-draft/"
     ): ContributorType.OTHER,
@@ -127,9 +111,7 @@ def _to_contributor(author: Person | ContributorRole) -> Contributor:
 
     if isinstance(author, ContributorRole):
         if author.additional_type:
-            contributor_type = __ROLES_MAPPING_.get(
-                author.additional_type, ContributorType.OTHER
-            )
+            contributor_type = __ROLES_MAPPING_.get(author.additional_type, ContributorType.OTHER)
 
         author = author.contributor
 
@@ -162,44 +144,32 @@ def _to_creator(author: Person | AuthorRole) -> Creator:
     return creator
 
 
-def _finalize(author: Person | Organization, creator: Creator):
+def _finalize(author: Person | Organization, creator: Creator) -> None:
+    """Populate the creator's identifiers and affiliations in place."""
     if author.identifier:
-        creator.name_identifiers = []
-        for identifier in (
-            author.identifier
-            if isinstance(author.identifier, list)
-            else [author.identifier]
-        ):
-            scheme, netloc, _, _, _, _ = urlparse(str(identifier))
-            creator.name_identifiers.append(
-                NameIdentifier(
-                    name_identifier=str(identifier),
-                    name_identifier_scheme=netloc.split(".")[0].upper(),
-                    scheme_uri=AnyUrl(f"{scheme}://{netloc}"),
-                )
+        scheme, netloc, _, _, _, _ = urlparse(str(author.identifier))
+        creator.name_identifiers = [
+            NameIdentifier(
+                name_identifier=str(author.identifier),
+                name_identifier_scheme=netloc.split(".")[0].upper(),
+                scheme_uri=AnyUrl(f"{scheme}://{netloc}"),
             )
+        ]
 
     if isinstance(author, Person):
         creator.affiliation = []
         for affiliation in (
-            author.affiliation
-            if isinstance(author.affiliation, list)
-            else [author.affiliation]
+            author.affiliation if isinstance(author.affiliation, list) else [author.affiliation]
         ):
             if affiliation.identifier:
-                for identifier in (
-                    affiliation.identifier
-                    if isinstance(affiliation.identifier, list)
-                    else [affiliation.identifier]
-                ):
-                    scheme, netloc, _, _, _, _ = urlparse(str(identifier))
-                    creator.affiliation.append(
-                        Affiliation(
-                            affiliation_identifier=str(identifier),
-                            affiliation_identifier_scheme=netloc.split(".")[0].upper(),
-                            scheme_uri=AnyUrl(f"{scheme}://{netloc}"),
-                        )
+                scheme, netloc, _, _, _, _ = urlparse(str(affiliation.identifier))
+                creator.affiliation.append(
+                    Affiliation(
+                        affiliation_identifier=str(affiliation.identifier),
+                        affiliation_identifier_scheme=netloc.split(".")[0].upper(),
+                        scheme_uri=AnyUrl(f"{scheme}://{netloc}"),
                     )
+                )
 
 
 @transpiler_plugin(
@@ -219,13 +189,9 @@ def cwl2datacite(context: TranspilerContext, options: CWL2DataCiteOptions) -> No
                 resource_type_general=ResourceTypeGeneral.SOFTWARE,
             ),
             identifiers=[
-                Identifier(
-                    identifier_type="DOI", identifier=str(metadata_source.identifier)
-                )
+                Identifier(identifier_type="DOI", identifier=str(metadata_source.identifier))
                 if metadata_source.identifier
-                else Identifier(
-                    identifier_type="URN", identifier=f"urn:uuid:{uuid.uuid4()}"
-                )
+                else Identifier(identifier_type="URN", identifier=f"urn:uuid:{uuid.uuid4()}")
             ],  # supply a fake required identifier if the DOI hasn't been associated yet
             related_identifiers=[
                 RelatedIdentifier(
@@ -304,9 +270,7 @@ def cwl2datacite(context: TranspilerContext, options: CWL2DataCiteOptions) -> No
         with options.output.open("w") as output_stream:
             json.dump(datacite_data, output_stream, indent=2)
 
-        logger.success(
-            f"DataCite metadata successfully serialized to {options.output.absolute()}"
-        )
+        logger.success(f"DataCite metadata successfully serialized to {options.output.absolute()}")
     except Exception as e:
         raise PluginExecutionError(
             f"An error occurred when serializing to {options.output.absolute()}, see nested exception"

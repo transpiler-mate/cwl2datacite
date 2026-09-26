@@ -1,5 +1,5 @@
 <!--
-Copyright 2026 Transpiler-Mate
+Copyright 2026 Terradue
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ limitations under the License.
 
 [![PyPI - Version](https://img.shields.io/pypi/v/cwl2datacite.svg)](https://pypi.org/project/cwl2datacite)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/cwl2datacite.svg)](https://pypi.org/project/cwl2datacite)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/transpiler-mate/cwl2datacite/package.yaml?branch=develop&event=push&label=build&logo=githubactions)](https://github.com/transpiler-mate/cwl2datacite/actions/workflows/package.yaml?query=branch%3Adevelop)
+[![Code coverage](https://img.shields.io/codecov/c/github/transpiler-mate/cwl2datacite/develop?logo=codecov)](https://app.codecov.io/gh/transpiler-mate/cwl2datacite/tree/develop)
 
 CWL 2 DataCite is a Transpiler-Mate plugin that converts metadata from a
 Common Workflow Language (CWL) document into JSON targeting version 4.6 of the

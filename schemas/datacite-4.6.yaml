@@ -659,7 +659,7 @@ $defs:
         description: Number of the resource within the related item, e.g., report number or article number.
         type: string
       numberType:
-        description: Type of the related item’s number, e.g., report number or article number.
+        description: Type of the related item's number, e.g., report number or article number.
         type: string
         enum:
         - Article

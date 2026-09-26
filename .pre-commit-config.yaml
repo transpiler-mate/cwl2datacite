@@ -1,4 +1,4 @@
-# Copyright {{ copyright_year }} {{ author_name }}
+# Copyright 2025 Terradue
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ repos:
 
   - id: ruff-format
     name: ruff (format)
-    entry: hatch run dev:lint
+    entry: hatch run dev:format-check
     language: system
     types_or:
     - python
@@ -41,7 +41,7 @@ repos:
 
   - id: ruff
     name: ruff (check and McCabe complexity)
-    entry: hatch run dev:check
+    entry: hatch run dev:lint-check
     language: system
     types_or:
     - python

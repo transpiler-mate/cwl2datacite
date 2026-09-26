@@ -1,5 +1,5 @@
 <!--
-Copyright 2026 Transpiler-Mate
+Copyright 2026 Terradue
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@ limitations under the License.
 ## Development setup
 
 ```bash
-cp .env.example .env
-hatch env create
-task quality
+hatch shell
+task
 ```
 
 ## Quality gate
@@ -29,7 +28,7 @@ task quality
 Before opening a pull request, run:
 
 ```bash
-task quality
+task
 ```
 
 ## Documentation
