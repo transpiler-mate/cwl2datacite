@@ -37,11 +37,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+## [0.1.1] - 2026-09-27
+
+### Changed
+
+* Improve type annotations and internal code quality by addressing mypy, Ruff, and Bandit findings, without changing public APIs or runtime behavior.
+
 ## [0.1.0] - 2026-09-09
 
 ### Added
 
 - Initial project release.
 
-[Unreleased]: https://github.com/Transpiler-Mate/cwl2datacite/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/Transpiler-Mate/cwl2datacite/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/Transpiler-Mate/cwl2datacite/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/Transpiler-Mate/cwl2datacite/releases/tag/0.1.0
